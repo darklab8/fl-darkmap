@@ -1,0 +1,12 @@
+{
+    // Define path to Freelancer Folder root
+    "FREELANCER_FOLDER": "${env:HOME}/windows10shared/fl-files-discovery",
+    // "FREELANCER_FOLDER": "${env:HOME}/windows10shared/fl-files-vanilla",
+    "DEV_ENV": "true",
+    "DARKMAP_LOG_LEVEL": "DEBUG",
+    "UTILS_LOG_LEVEL": "DEBUG",
+    // if u wish to speed up rerender by magnitude, then keep uncommended trade route calculations disabling
+    "CONFIGS_DISABLE_TRADE_ROUTES": "true"
+    // "CONFIGS_FALLBACK_TO_NICKNAMES": "true",
+    // "CONFIGS_STRICT": "false",
+}

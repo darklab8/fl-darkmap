@@ -1,0 +1,37 @@
+package front
+
+import "github.com/darklab8/fl-darkmap/darkmap/types"
+
+// "github.com/darklab8/fl-darkmap/darkmap/front/static_front"
+// "github.com/darklab8/fl-darkmap/darkmap/front/urls"
+templ Html5() {
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<link rel="icon" type="image/x-icon" href={ types.GetCtx(ctx).StaticRoot + "common/favicon.ico" }/>
+			<title>{ "darkstat" }</title>
+			<link link rel="stylesheet" href={ types.GetCtx(ctx).StaticRoot + "reset.css" }/>
+			<link link rel="stylesheet" href={ types.GetCtx(ctx).StaticRoot + "common.css" }/>
+			<link link rel="stylesheet" href={ types.GetCtx(ctx).StaticRoot + "custom.css" }/>
+			<script src={ types.GetCtx(ctx).StaticRoot + "sortable.js" }></script>
+			<script src={ types.GetCtx(ctx).StaticRoot + "htmx.js" }></script>
+			<script src={ types.GetCtx(ctx).StaticRoot + "preload.js" }></script>
+			<script src={ types.GetCtx(ctx).StaticRoot + "custom.js" }></script>
+			<script>
+
+			</script>
+		</head>
+		<body hx-ext="preload">
+			{ children... }
+		</body>
+	</html>
+}
+
+templ Index() {
+	@Html5() {
+		123
+		<div class="card" data-size="big"></div>
+		<div class="card"></div>
+		<div class="card" data-size="small"></div>
+	}
+}

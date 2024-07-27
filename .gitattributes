@@ -1,0 +1,4 @@
+sortable.js linguist-vendored
+htmx.* linguist-vendored
+*.templ linguist-language=go
+
