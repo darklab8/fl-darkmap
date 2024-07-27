@@ -21,7 +21,10 @@ type DarkstatEnvVars struct {
 
 var Env DarkstatEnvVars
 
+var Version = "development"
+
 func init() {
+	fmt.Println("Version:\t", Version)
 	var GolangVersion string
 	if info, ok := debug.ReadBuildInfo(); ok {
 		fmt.Println(info.GoVersion)

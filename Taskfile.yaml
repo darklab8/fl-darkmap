@@ -1,5 +1,8 @@
 version: "3"
 
+# u can embed version like this
+# go build -ldflags="-w -s -X 'github.com/darklab8/fl-darkmap/darkmap/settings.Version=some_vers'"
+
 tasks:
   test:
     cmds:
