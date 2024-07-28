@@ -3,7 +3,6 @@ package linker
 import (
 	"time"
 
-	"github.com/darklab8/fl-configs/configs/configs_export"
 	"github.com/darklab8/fl-configs/configs/configs_mapped"
 	"github.com/darklab8/fl-darkcore/darkcore/builder"
 	"github.com/darklab8/fl-darkcore/darkcore/core_static"
@@ -19,8 +18,7 @@ import (
 )
 
 type Linker struct {
-	mapped  *configs_mapped.MappedConfigs
-	configs *configs_export.Exporter
+	mapped *configs_mapped.MappedConfigs
 }
 
 type LinkOption func(l *Linker)
@@ -31,58 +29,54 @@ func NewLinker(opts ...LinkOption) *Linker {
 		opt(l)
 	}
 
-	timeit.NewTimerF(func(m *timeit.Timer) {
-		freelancer_folder := settings.Env.FreelancerFolder
-		if l.configs == nil {
-			l.mapped = configs_mapped.NewMappedConfigs()
-			logus.Log.Debug("scanning freelancer folder", utils_logus.FilePath(freelancer_folder))
-			l.mapped.Read(freelancer_folder)
-			l.configs = configs_export.NewExporter(l.mapped)
-		}
-	}, timeit.WithMsg("MappedConfigs creation"))
+	defer timeit.NewTimer("MappedConfigs creation").Close()
+
+	freelancer_folder := settings.Env.FreelancerFolder
+	if l.mapped == nil {
+		logus.Log.Debug("scanning freelancer folder", utils_logus.FilePath(freelancer_folder))
+		l.mapped = configs_mapped.NewMappedConfigs().Read(freelancer_folder)
+	}
 	return l
 }
 
 func (l *Linker) Link() *builder.Builder {
+	defer timeit.NewTimer("Link").Close()
 	var build *builder.Builder
-	timeit.NewTimerF(func(m *timeit.Timer) {
-		timeit.NewTimerF(func(m *timeit.Timer) {
-			staticPrefix := "static/"
-			siteRoot := settings.Env.SiteRoot
-			params := types.GlobalParams{
-				Buildpath:         "",
-				SiteRoot:          siteRoot,
-				StaticRoot:        siteRoot + staticPrefix,
-				OppositeThemeRoot: siteRoot + "dark.html",
-				Timestamp:         time.Now().UTC(),
-			}
+	staticPrefix := "static/"
+	siteRoot := settings.Env.SiteRoot
+	params := types.GlobalParams{
+		Buildpath:         "",
+		SiteRoot:          siteRoot,
+		StaticRoot:        siteRoot + staticPrefix,
+		OppositeThemeRoot: siteRoot + "dark.html",
+		Timestamp:         time.Now().UTC(),
+	}
 
-			static_files := []builder.StaticFile{
-				builder.NewStaticFileFromCore(core_static.HtmxJS),
-				builder.NewStaticFileFromCore(core_static.HtmxPreloadJS),
-				builder.NewStaticFileFromCore(core_static.SortableJS),
-				builder.NewStaticFileFromCore(core_static.ResetCSS),
-				builder.NewStaticFileFromCore(core_static.FaviconIco),
+	static_files := []builder.StaticFile{
+		builder.NewStaticFileFromCore(core_static.HtmxJS),
+		builder.NewStaticFileFromCore(core_static.HtmxPreloadJS),
+		builder.NewStaticFileFromCore(core_static.SortableJS),
+		builder.NewStaticFileFromCore(core_static.ResetCSS),
+		builder.NewStaticFileFromCore(core_static.FaviconIco),
 
-				builder.NewStaticFileFromCore(static_front.CommonCSS),
-				builder.NewStaticFileFromCore(static_front.CustomCSS),
-				builder.NewStaticFileFromCore(static_front.CustomJS),
-			}
+		builder.NewStaticFileFromCore(static_front.CommonCSS),
+		builder.NewStaticFileFromCore(static_front.CustomCSS),
+		builder.NewStaticFileFromCore(static_front.CustomJS),
+	}
 
-			build = builder.NewBuilder(params, static_files)
-		}, timeit.WithMsg("building creation"))
+	build = builder.NewBuilder(params, static_files)
 
-		// var data *configs_export.Exporter
-		// timeit.NewTimerF(func(m *timeit.Timer) {
-		// 	data = l.configs.Export()
-		// }, timeit.WithMsg("exporting data"))
+	// var data *configs_export.Exporter
+	// timeit.NewTimerF(func(m *timeit.Timer) {
+	// 	data = l.configs.Export()
+	// }, timeit.WithMsg("exporting data"))
 
-		build.RegComps(
-			builder.NewComponent(
-				urls.Index,
-				front.Index(),
-			),
-		)
-	})
+	build.RegComps(
+		builder.NewComponent(
+			urls.Index,
+			front.Index(),
+		),
+	)
+
 	return build
 }
