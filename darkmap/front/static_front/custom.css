@@ -27,6 +27,7 @@
     z-index: 3;
 }
 
+
 .vertical_th {
     display: flex;
     flex-direction: column;

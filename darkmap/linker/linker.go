@@ -7,6 +7,7 @@ import (
 	"github.com/darklab8/fl-configs/configs/configs_mapped"
 	"github.com/darklab8/fl-darkcore/darkcore/builder"
 	"github.com/darklab8/fl-darkcore/darkcore/core_static"
+
 	"github.com/darklab8/fl-darkmap/darkmap/front"
 	"github.com/darklab8/fl-darkmap/darkmap/front/static_front"
 	"github.com/darklab8/fl-darkmap/darkmap/front/urls"
@@ -15,7 +16,6 @@ import (
 	"github.com/darklab8/fl-darkmap/darkmap/types"
 	"github.com/darklab8/go-utils/utils/timeit"
 	"github.com/darklab8/go-utils/utils/utils_logus"
-	"github.com/darklab8/go-utils/utils/utils_types"
 )
 
 type Linker struct {
@@ -58,16 +58,15 @@ func (l *Linker) Link() *builder.Builder {
 			}
 
 			static_files := []builder.StaticFile{
-				builder.NewStaticFile("htmx.js", []byte(core_static.HtmxJs)),
-				builder.NewStaticFile("htmx.js", []byte(core_static.HtmxJs)),
-				builder.NewStaticFile("preload.js", []byte(core_static.PreloadJs)),
-				builder.NewStaticFile("sortable.js", []byte(core_static.SortableJs)),
-				builder.NewStaticFile("custom.js", []byte(static_front.CustomJS)),
+				builder.NewStaticFileFromCore(core_static.HtmxJS),
+				builder.NewStaticFileFromCore(core_static.HtmxPreloadJS),
+				builder.NewStaticFileFromCore(core_static.SortableJS),
+				builder.NewStaticFileFromCore(core_static.ResetCSS),
+				builder.NewStaticFileFromCore(core_static.FaviconIco),
 
-				builder.NewStaticFile("reset.css", []byte(core_static.ResetCSS)),
-				builder.NewStaticFile("common.css", []byte(static_front.CommonCSS)),
-				builder.NewStaticFile("custom.css", []byte(static_front.CustomCSS)),
-				builder.NewStaticFile(utils_types.FilePath("common").Join("favicon.ico"), []byte(static_front.FaviconIco)),
+				builder.NewStaticFileFromCore(static_front.CommonCSS),
+				builder.NewStaticFileFromCore(static_front.CustomCSS),
+				builder.NewStaticFileFromCore(static_front.CustomJS),
 			}
 
 			build = builder.NewBuilder(params, static_files)
