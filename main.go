@@ -3,15 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/darklab8/fl-darkcore/darkcore/builder"
 	"github.com/darklab8/fl-darkcore/darkcore/web"
 	"github.com/darklab8/fl-darkmap/darkmap/linker"
 	"github.com/darklab8/fl-darkmap/darkmap/settings"
-	"github.com/darklab8/fl-darkmap/darkmap/settings/logus"
 	"github.com/darklab8/fl-data-discovery/autopatcher"
-	"github.com/darklab8/go-typelog/typelog"
 	"github.com/darklab8/go-utils/utils/timeit"
 )
 
@@ -28,16 +25,16 @@ const (
 
 func main() {
 	fmt.Println("freelancer folder=", settings.Env.FreelancerFolder, settings.Env)
-	defer func() {
-		if r := recover(); r != nil {
-			logus.Log.Error("Program crashed. Sleeping 10 seconds before exit", typelog.Any("recover", r))
-			if !settings.Env.IsDevEnv {
-				fmt.Println("going to sleeping")
-				time.Sleep(10 * time.Second)
-			}
-			panic(r)
-		}
-	}()
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		logus.Log.Error("Program crashed. Sleeping 10 seconds before exit", typelog.Any("recover", r))
+	// 		if !settings.Env.IsDevEnv {
+	// 			fmt.Println("going to sleeping")
+	// 			time.Sleep(10 * time.Second)
+	// 		}
+	// 		panic(r)
+	// 	}
+	// }()
 
 	var action string
 	argsWithoutProg := os.Args[1:]
@@ -56,7 +53,7 @@ func main() {
 		timer_NewLinkerLink.Close()
 
 		timer_buildall := timeit.NewTimer("building stuff linked_build.BuildAll()")
-		fs = linked_build.BuildAll()
+		fs = linked_build.BuildAll(true)
 		timer_buildall.Close()
 
 		timer_web.Close()
@@ -66,7 +63,7 @@ func main() {
 	switch Action(action) {
 
 	case Build:
-		linker.NewLinker().Link().BuildAll().RenderToLocal()
+		linker.NewLinker().Link().BuildAll(false)
 	case Web:
 		web()
 	case Version:

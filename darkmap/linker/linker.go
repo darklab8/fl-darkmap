@@ -8,6 +8,7 @@ import (
 	"github.com/darklab8/fl-darkcore/darkcore/core_static"
 
 	"github.com/darklab8/fl-darkmap/darkmap/front"
+	"github.com/darklab8/fl-darkmap/darkmap/front/static"
 	"github.com/darklab8/fl-darkmap/darkmap/front/static_front"
 	"github.com/darklab8/fl-darkmap/darkmap/front/urls"
 	"github.com/darklab8/fl-darkmap/darkmap/settings"
@@ -52,19 +53,22 @@ func (l *Linker) Link() *builder.Builder {
 		Timestamp:         time.Now().UTC(),
 	}
 
-	static_files := []builder.StaticFile{
+	files := []builder.StaticFile{
 		builder.NewStaticFileFromCore(core_static.HtmxJS),
 		builder.NewStaticFileFromCore(core_static.HtmxPreloadJS),
 		builder.NewStaticFileFromCore(core_static.SortableJS),
 		builder.NewStaticFileFromCore(core_static.ResetCSS),
 		builder.NewStaticFileFromCore(core_static.FaviconIco),
-
 		builder.NewStaticFileFromCore(static_front.CommonCSS),
 		builder.NewStaticFileFromCore(static_front.CustomCSS),
 		builder.NewStaticFileFromCore(static_front.CustomJS),
 	}
 
-	build = builder.NewBuilder(params, static_files)
+	for _, file := range static.StaticFilesystem.Files {
+		files = append(files, builder.NewStaticFileFromCore(file))
+	}
+
+	build = builder.NewBuilder(params, files)
 
 	// var data *configs_export.Exporter
 	// timeit.NewTimerF(func(m *timeit.Timer) {
