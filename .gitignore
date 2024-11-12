@@ -9,3 +9,7 @@ dist/*
 ruby_home/
 gems/
 !.vscode/
+node_modules/
+experiment/
+package*
+tsconfig*

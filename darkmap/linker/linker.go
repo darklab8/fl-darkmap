@@ -3,23 +3,21 @@ package linker
 import (
 	"time"
 
-	"github.com/darklab8/fl-configs/configs/configs_mapped"
 	"github.com/darklab8/fl-darkcore/darkcore/builder"
 	"github.com/darklab8/fl-darkcore/darkcore/core_static"
 
 	"github.com/darklab8/fl-darkmap/darkmap/front"
+	"github.com/darklab8/fl-darkmap/darkmap/front/export_front"
 	"github.com/darklab8/fl-darkmap/darkmap/front/static"
 	"github.com/darklab8/fl-darkmap/darkmap/front/static_front"
 	"github.com/darklab8/fl-darkmap/darkmap/front/urls"
 	"github.com/darklab8/fl-darkmap/darkmap/settings"
-	"github.com/darklab8/fl-darkmap/darkmap/settings/logus"
 	"github.com/darklab8/fl-darkmap/darkmap/types"
 	"github.com/darklab8/go-utils/utils/timeit"
-	"github.com/darklab8/go-utils/utils/utils_logus"
 )
 
 type Linker struct {
-	mapped *configs_mapped.MappedConfigs
+	Export *export_front.Export
 }
 
 type LinkOption func(l *Linker)
@@ -30,17 +28,12 @@ func NewLinker(opts ...LinkOption) *Linker {
 		opt(l)
 	}
 
-	defer timeit.NewTimer("MappedConfigs creation").Close()
-
-	freelancer_folder := settings.Env.FreelancerFolder
-	if l.mapped == nil {
-		logus.Log.Debug("scanning freelancer folder", utils_logus.FilePath(freelancer_folder))
-		l.mapped = configs_mapped.NewMappedConfigs().Read(freelancer_folder)
-	}
 	return l
 }
 
 func (l *Linker) Link() *builder.Builder {
+	l.Export = export_front.NewExport()
+
 	defer timeit.NewTimer("Link").Close()
 	var build *builder.Builder
 	staticPrefix := "static/"
@@ -70,15 +63,10 @@ func (l *Linker) Link() *builder.Builder {
 
 	build = builder.NewBuilder(params, files)
 
-	// var data *configs_export.Exporter
-	// timeit.NewTimerF(func(m *timeit.Timer) {
-	// 	data = l.configs.Export()
-	// }, timeit.WithMsg("exporting data"))
-
 	build.RegComps(
 		builder.NewComponent(
 			urls.Index,
-			front.Index(),
+			front.Index(l.Export),
 		),
 	)
 
