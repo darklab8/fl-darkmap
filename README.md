@@ -1,5 +1,5 @@
 > [!NOTE]  
-> The project is still in learly development stage and haven't reached MVP (Minimal Viable Product)
+> **The project is still in early development stage and haven't reached MVP (Minimal Viable Product)**
 
 # Description
 
