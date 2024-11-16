@@ -1,3 +1,6 @@
+> [!NOTE]  
+> The project is still in learly development stage and haven't reached MVP (Minimal Viable Product)
+
 # Description
 
 Remake in golang of online navmap for [Freelancer Discovery](<https://discoverygc.com/>). Newer version should be easier to maintain, and should be way more rapid due to design being a static site generator powered by htmx. Potentially also implementing different new features :]
