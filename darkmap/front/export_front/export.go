@@ -9,7 +9,8 @@ import (
 )
 
 type Export struct {
-	Mapped *configs_mapped.MappedConfigs
+	Mapped  *configs_mapped.MappedConfigs
+	Systems []System
 }
 
 func NewExport() *Export {
@@ -28,6 +29,10 @@ func NewExport() *Export {
 	return e
 }
 
-func (e *Export) export() {
+func (e *Export) GetInfocardName(ids_name int, nickname string) string {
+	return e.Mapped.GetInfocardName(ids_name, nickname)
+}
 
+func (e *Export) export() {
+	e.Systems = exportSystems(e.Mapped)
 }
